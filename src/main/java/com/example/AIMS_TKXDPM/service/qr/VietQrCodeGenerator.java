@@ -39,16 +39,20 @@ public class VietQrCodeGenerator implements QrCodeGenerator {
             qrImage.createGraphics();
 
             Graphics2D graphics = (Graphics2D) qrImage.getGraphics();
-            graphics.setColor(Color.WHITE);
-            graphics.fillRect(0, 0, width, height);
-            graphics.setColor(Color.BLACK);
+            try {
+                graphics.setColor(Color.WHITE);
+                graphics.fillRect(0, 0, width, height);
+                graphics.setColor(Color.BLACK);
 
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if (bitMatrix.get(i, j)) {
-                        graphics.fillRect(i, j, 1, 1);
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        if (bitMatrix.get(i, j)) {
+                            graphics.fillRect(i, j, 1, 1);
+                        }
                     }
                 }
+            } finally {
+                graphics.dispose(); // Release graphics resources
             }
 
             return qrImage;

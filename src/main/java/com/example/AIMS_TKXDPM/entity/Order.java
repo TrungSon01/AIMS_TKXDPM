@@ -20,19 +20,19 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(name = "customerName", nullable = false)
     private String customerName;
 
-    @Column(length = 500)
+    @Column(name = "addressLine", length = 500)
     private String addressLine;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "shippingFee", precision = 10, scale = 2)
     private BigDecimal shippingFee = BigDecimal.ZERO;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "createdAt", nullable = true, updatable = false, insertable = false)
+    private LocalDateTime createdAt;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -44,7 +44,7 @@ public class PaymentService {
         payment.setOrder(order);
         payment.setAmount(request.getAmount());
         payment.setDescription(request.getDescription());
-        payment.setStatus(Payment.PaymentStatus.PENDING);
+        payment.setStatus("PENDING");
         payment.setPaymentMethod("VIETQR");
         payment.setExpiresAt(LocalDateTime.now().plusHours(24)); // Expires in 24 hours
 
@@ -77,17 +77,17 @@ public class PaymentService {
         Payment payment = paymentRepository.findByPaymentCode(request.getPaymentCode())
                 .orElseThrow(() -> new RuntimeException("Payment not found with code: " + request.getPaymentCode()));
 
-        if (payment.getStatus() != Payment.PaymentStatus.PENDING) {
+        if (!"PENDING".equals(payment.getStatus())) {
             throw new RuntimeException("Payment is already " + payment.getStatus());
         }
 
         if (payment.getExpiresAt() != null && payment.getExpiresAt().isBefore(LocalDateTime.now())) {
-            payment.setStatus(Payment.PaymentStatus.EXPIRED);
+            payment.setStatus("EXPIRED");
             paymentRepository.save(payment);
             throw new RuntimeException("Payment has expired");
         }
 
-        payment.setStatus(Payment.PaymentStatus.COMPLETED);
+        payment.setStatus("COMPLETED");
         payment.setPaidAt(LocalDateTime.now());
         payment = paymentRepository.save(payment);
 
@@ -103,10 +103,11 @@ public class PaymentService {
         PaymentResponse response = new PaymentResponse();
         response.setId(payment.getId());
         response.setPaymentCode(payment.getPaymentCode());
-        response.setOrderId(payment.getOrder().getId());
+        // Safe null check for order
+        response.setOrderId(payment.getOrder() != null ? payment.getOrder().getId() : null);
         response.setAmount(payment.getAmount());
         response.setDescription(payment.getDescription());
-        response.setStatus(payment.getStatus().name());
+        response.setStatus(payment.getStatus());
         response.setQrCodeUrl(payment.getQrCodeUrl());
         response.setQrCodeData(qrCodeData);
         response.setCreatedAt(payment.getCreatedAt());

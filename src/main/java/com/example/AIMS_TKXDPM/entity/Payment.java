@@ -18,40 +18,37 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, length = 50)
+    @Column(name = "paymentCode", unique = true, length = 50)
     private String paymentCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", nullable = false)
     private Order order;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column(length = 255, unique = true)
+    @Column(name = "transactionId", length = 255, unique = true)
     private String transactionId;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 20)
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status = PaymentStatus.PENDING;
+    @Column(name = "status", length = 20)
+    private String status = "PENDING";
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "qrCodeUrl", columnDefinition = "TEXT")
     private String qrCodeUrl;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "createdAt", nullable = true, updatable = false, insertable = false)
+    private LocalDateTime createdAt;
 
+    @Column(name = "expiresAt")
     private LocalDateTime expiresAt;
 
+    @Column(name = "paidAt")
     private LocalDateTime paidAt;
 
-    @Column(length = 50)
+    @Column(name = "paymentMethod", length = 50)
     private String paymentMethod = "VIETQR";
-
-    public enum PaymentStatus {
-        PENDING, COMPLETED, EXPIRED, CANCELLED
-    }
 }
